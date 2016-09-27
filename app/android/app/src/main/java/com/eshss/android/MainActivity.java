@@ -80,8 +80,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-        builder.setPositiveButton("I agree", new OkOnClickListener());
-        38:	builder.setNegativeButton("No, no", new CancelOnClickListener());
+
 
         builder.setView(listView);
 

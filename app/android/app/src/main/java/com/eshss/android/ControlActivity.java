@@ -6,27 +6,25 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class ViewStreamActivity extends AppCompatActivity {
+public class ControlActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_view_stream);
+        setContentView(R.layout.activity_control);
     }
-
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.activity_main, menu);
+        getMenuInflater().inflate(R.menu.activity2_main, menu);
         return true;
     }
 
     @Override
-      public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item) {
 
         Intent intent = new Intent();
-        intent.setClass(ViewStreamActivity.this, ControlActivity.class);
+        intent.setClass(ControlActivity.this, ViewStreamActivity.class);
         startActivityForResult(intent, 0);
 
         return true;
