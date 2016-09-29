@@ -1,19 +1,29 @@
 import os
+import sys
+sys.path.insert(0, os.path.abspath('.'))
+from camera_api.camera import Camera
+import camera_api.config as config
+
 import time
 import argparse
 from flask import Flask, render_template, Response, jsonify, url_for
-from camera import Camera
 
 
-# Camera URL
-CAMERA_URL = 'http://192.168.1.239:81'
+
 # Gallery folder name
 STATIC_FOLDER = 'gallery'
+# Switch camera direction control
+CAMERA_DIRECTION_CTRL = {
+    'left': ip_camera.turn_left(),
+    'right': ip_camera.turn_right(),
+    'up': ip_camera.turn_up(),
+    'down': ip_camera.turn_down()
+}
 
 
 # Init Flask app & Camera object
 app = Flask(__name__, static_folder=STATIC_FOLDER)
-ip_camera = Camera(CAMERA_URL)
+ip_camera = Camera(config.DEFAULT_CAMERA_IP, config.USER_NAME, config.PASSWORD)
 
 
 
@@ -40,14 +50,14 @@ def video_feed():
 
 @app.route('/control_camera/<direction>', methods=['POST'])
 def control_camera(direction):
-    """Control camera move left, right."""
-    pass
+    """Control camera move left, right, up, down."""
+    return CAMERA_DIRECTION_CTRL[direction]
 
 
 @app.route('/capture_image')
 def capture_image():
     """
-    Capture image and save to loca storage when user
+    Capture image and save to local storage when user
     press 'Capture' button on Android client.
     """
     pass
