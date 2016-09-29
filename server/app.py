@@ -13,7 +13,7 @@ STATIC_FOLDER = 'gallery'
 
 # Init Flask app & Camera object
 app = Flask(__name__, static_folder=STATIC_FOLDER)
-camera_instance = Camera(CAMERA_URL)
+ip_camera = Camera(CAMERA_URL)
 
 
 
@@ -34,7 +34,7 @@ def index():
 @app.route('/video_feed')
 def video_feed():
     """Video streaming route."""
-    return Response(gen(camera_instance),
+    return Response(gen(ip_camera),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
@@ -90,4 +90,4 @@ if __name__ == '__main__':
         CAMERA_URL = args['camera']
     
     # Run the app
-    app.run(host='0.0.0.0', debug=True)
+    app.run(host='0.0.0.0')
