@@ -1,8 +1,10 @@
 import os
 import sys
 sys.path.insert(0, os.path.abspath('.'))
-from camera_api.camera import Camera
-import camera_api.config as config
+# from camera_api.camera import Camera
+# import camera_api.config as config
+from mockCamera import VideoCamera;
+
 
 import time
 import argparse
@@ -16,7 +18,7 @@ STATIC_FOLDER = 'gallery'
 
 # Init Flask app & Camera object
 app = Flask(__name__, static_folder=STATIC_FOLDER)
-ip_camera = Camera(config.DEFAULT_CAMERA_IP, config.USER_NAME, config.PASSWORD)
+# ip_camera = Camera(config.DEFAULT_CAMERA_IP, config.USER_NAME, config.PASSWORD)
 
 
 
@@ -37,7 +39,7 @@ def index():
 @app.route('/video_feed')
 def video_feed():
     """Video streaming route."""
-    return Response(gen(ip_camera),
+    return Response(gen(VideoCamera()),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
