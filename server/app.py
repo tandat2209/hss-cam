@@ -12,13 +12,6 @@ from flask import Flask, render_template, Response, jsonify, url_for
 
 # Gallery folder name
 STATIC_FOLDER = 'gallery'
-# Switch camera direction control
-CAMERA_DIRECTION_CTRL = {
-    'left': ip_camera.turn_left(),
-    'right': ip_camera.turn_right(),
-    'up': ip_camera.turn_up(),
-    'down': ip_camera.turn_down()
-}
 
 
 # Init Flask app & Camera object
@@ -51,7 +44,12 @@ def video_feed():
 @app.route('/control_camera/<direction>', methods=['POST'])
 def control_camera(direction):
     """Control camera move left, right, up, down."""
-    return CAMERA_DIRECTION_CTRL[direction]
+    return {
+        'left': ip_camera.turn_left(),
+        'right': ip_camera.turn_right(),
+        'up': ip_camera.turn_up(),
+        'down': ip_camera.turn_down()
+    }[direction]
 
 
 @app.route('/capture_image')
