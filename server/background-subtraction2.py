@@ -32,16 +32,18 @@ def main():
 
         # process frame
         curFrame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        curFrame = cv2.GaussianBlur(curFrame, (11, 11), 0)
-
+        # curFrame = cv2.GaussianBlur(curFrame, (21, 21), 0)
+        curFrame = cv2.medianBlur(curFrame, 11)
         if prevFrame is None:
             prevFrame = curFrame
             continue
 
         frameDelta = cv2.absdiff(curFrame, prevFrame)
         _, thresh = cv2.threshold(frameDelta, 10, 255, cv2.THRESH_BINARY)
-        kernel = np.ones((51,51),np.uint8)
-        # thresh = cv2.dilate(thresh, kernel, iterations=3)
+        kernel = np.ones((3,3), np.uint8)
+        thresh = cv2.erode(thresh, kernel, iterations=1)
+        thresh = cv2.dilate(thresh, kernel, iterations=1)
+        kernel = np.ones((71,71),np.uint8)
         thresh = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, kernel)
        
         contours, _ = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
@@ -56,7 +58,7 @@ def main():
                     something = False;
 
         for c in contours:
-            if cv2.contourArea(c) < 300:
+            if cv2.contourArea(c) < 500:
                 continue
             if(datetime.now() - prevDetectTime).total_seconds() > DETECT_SECOND:
                 if (not something): 
