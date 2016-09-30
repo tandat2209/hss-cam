@@ -1,5 +1,0 @@
-<resources>
-    <string name="app_name">HSS CAM</string>
-    <string name="btnViewCam">View Cam</string>
-    <string name="btnConnect">Connect to Camera</string>
-</resources>
