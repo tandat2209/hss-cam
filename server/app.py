@@ -5,7 +5,6 @@ sys.path.insert(0, os.path.abspath('.'))
 # import camera_api.config as config
 from mockCamera import VideoCamera;
 
-
 import time
 import argparse
 from flask import Flask, render_template, Response, jsonify, url_for
