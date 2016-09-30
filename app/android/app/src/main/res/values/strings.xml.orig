@@ -1,0 +1,14 @@
+<resources>
+<<<<<<< HEAD
+    <string name="app_name"></string>
+
+    <string name="btn_connect">Connect To Camera</string>
+    <string name="menu_control">Control</string>
+    <string name="menu_fullview">FullView</string>
+
+=======
+    <string name="app_name">HSS CAM</string>
+    <string name="btnViewCam">View Cam</string>
+    <string name="btnConnect">Connect to Camera</string>
+>>>>>>> origin/server
+</resources>
