@@ -1,8 +1,0 @@
-<resources>
-    <string name="app_name"></string>
-
-    <string name="btn_connect">Connect To Camera</string>
-    <string name="menu_control">Control</string>
-    <string name="menu_fullview">FullView</string>
-
-</resources>
