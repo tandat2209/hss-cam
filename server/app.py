@@ -7,7 +7,7 @@ from mockCamera import VideoCamera;
 
 import time
 import argparse
-from flask import Flask, render_template, Response, jsonify, url_for
+from flask import Flask, render_template, Response, jsonify, url_for, send_file
 
 
 
@@ -18,8 +18,6 @@ STATIC_FOLDER = 'gallery'
 # Init Flask app & Camera object
 app = Flask(__name__, static_folder=STATIC_FOLDER)
 # ip_camera = Camera(config.DEFAULT_CAMERA_IP, config.USER_NAME, config.PASSWORD)
-
-
 
 def gen(camera):
     """Video streaming generator function."""
@@ -41,6 +39,10 @@ def video_feed():
     return Response(gen(VideoCamera()),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
+@app.route('/get_images')
+def get_images():
+    frame = videoCam.get_frame()
+    return send_file(frame, mimetype='image/jpeg', as_attachment=True, attachment_filename='myfile.jpg')
 
 @app.route('/control_camera/<direction>', methods=['POST'])
 def control_camera(direction):
@@ -99,4 +101,4 @@ if __name__ == '__main__':
         CAMERA_URL = args['camera']
     
     # Run the app
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0', debug=True)

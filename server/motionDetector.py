@@ -37,7 +37,7 @@ class MotionDetector(object):
         
         thresh = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, MORPH_CLOSE_KERNEL)
        
-        contours, _ = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        ima, contours, ret = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         for c in contours:
             if cv2.contourArea(c) < MIN_COUNTOUR_AREA:
                 continue
