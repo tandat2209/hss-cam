@@ -1,35 +1,24 @@
 package com.eshss.android;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.AsyncTask;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.MediaController;
 import android.widget.VideoView;
-
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
-
-
-
 import org.apache.http.impl.client.DefaultHttpClient;
-
 import android.view.View.OnTouchListener;
 import android.view.MotionEvent;
 
@@ -37,7 +26,6 @@ import android.view.MotionEvent;
 public class ControlActivity extends AppCompatActivity {
     Button btnCaptureimages, btnViewImage;
     VideoView vidView;
-
     private Button btn_cam_up, btn_cam_down, btn_cam_left, btn_cam_right;
     private MjpegView mv;
     MjpegInputStream inputStream;
@@ -62,28 +50,34 @@ public class ControlActivity extends AppCompatActivity {
 
 //
 //https://archive.org/download/ksnn_compilation_master_the_internet/ksnn_compilation_master_the_internet_512kb.mp4
-        VideoView videoView =(VideoView)findViewById(R.id.videoView);
-        MediaController mediaController= new MediaController(this);
-        mediaController.setAnchorView(videoView);
-        String urlComputerLocal = "http://192.168.137.190:5000",
-                urlCameraInternet = "http://iris.not.iac.es/axis-cgi/mjpg/video.cgi";
-        Uri uri = Uri.parse(urlComputerLocal);
-        videoView.setMediaController(mediaController);
-        videoView.setVideoURI(uri);
-        videoView.requestFocus();
-        videoView.start();
+//        VideoView videoView =(VideoView)findViewById(R.id.videoView);
+//        MediaController mediaController= new MediaController(this);
+//        mediaController.setAnchorView(videoView);
+//        String urlComputerLocal = "http://192.168.137.190:5000",
+//                urlCameraInternet = "http://iris.not.iac.es/axis-cgi/mjpg/video.cgi";
+//        Uri uri = Uri.parse(urlComputerLocal);
+//        videoView.setMediaController(mediaController);
+//        videoView.setVideoURI(uri);
+//        videoView.requestFocus();
+//        videoView.start();
 
 //        CameraURL = (String) getResources().getText(R.string.default_camURL);
 
 //        loadPref();
 
+
+
+
 //        mv = new MjpegView(this);
 //        View stolenView = mv;
-//
 //        setContentView(R.layout.activity_view_stream);
 //        View view =(findViewById(R.id.videoView));
 //        ((ViewGroup) view).addView(stolenView);
-//        new DoRead().execute(CameraURL);
+//        new DoRead().execute(CameraStreamURL);
+
+
+
+
 
 //        CameraURL = (String) getResources().getText(R.string.default_camURL);
 //
@@ -120,60 +114,53 @@ public class ControlActivity extends AppCompatActivity {
             public boolean onTouch(View v, MotionEvent event) {
                 if(event.getAction() == MotionEvent.ACTION_DOWN) {
                     String URL = CameraControlURL + "&code=2&value=3";
-                    new WebPageTask().execute(URL);
+                    new HandlingData().execute(URL);
                 } else if (event.getAction() == MotionEvent.ACTION_UP) {
                     String URL = CameraControlURL + "&code=3&value=3";
-                    new WebPageTask().execute(URL);
+                    new HandlingData().execute(URL);
                 }
                 return false;
             }
         });
-
         btn_cam_right.setOnTouchListener(new OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
                 if(event.getAction() == MotionEvent.ACTION_DOWN) {
                     String URL = CameraControlURL + "&code=2&value=4";
-                    new WebPageTask().execute(URL);
+                    new HandlingData().execute(URL);
                 } else if (event.getAction() == MotionEvent.ACTION_UP) {
                     String URL = CameraControlURL + "&code=3&value=4";
-                    new WebPageTask().execute(URL);
+                    new HandlingData().execute(URL);
                 }
                 return false;
             }
         });
-//
         btn_cam_up.setOnTouchListener(new OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
                 if(event.getAction() == MotionEvent.ACTION_DOWN) {
                     String URL = CameraControlURL + "&code=2&value=1";
-                    new WebPageTask().execute(URL);
+                    new HandlingData().execute(URL);
                 } else if (event.getAction() == MotionEvent.ACTION_UP) {
                     String URL = CameraControlURL + "&code=3&value=1";
-                    new WebPageTask().execute(URL);
+                    new HandlingData().execute(URL);
                 }
                 return false;
             }
         });
-//
         btn_cam_down.setOnTouchListener(new OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
                 if(event.getAction() == MotionEvent.ACTION_DOWN) {
                     String URL = CameraControlURL + "&code=2&value=2";
-                    new WebPageTask().execute(URL);
+                    new HandlingData().execute(URL);
                 } else if (event.getAction() == MotionEvent.ACTION_UP) {
                     String URL = CameraControlURL + "&code=3&value=2";
-                    new WebPageTask().execute(URL);
+                    new HandlingData().execute(URL);
                 }
                 return false;
             }
         });
-
     }
-
-
-
-
-    private class WebPageTask extends AsyncTask<String, Void, String> {
+    // Xử lý URL
+    private class HandlingData extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... urls) {
             String response = "";
@@ -202,11 +189,7 @@ public class ControlActivity extends AppCompatActivity {
             //textView.setText(result);
         }
     }
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        loadPref();
-//    }
-//
+
     public class DoRead extends AsyncTask<String, Void, MjpegInputStream> {
         protected MjpegInputStream doInBackground(String... url) {
             //TODO: if camera has authentication deal with it and don't just not work
@@ -242,28 +225,7 @@ public class ControlActivity extends AppCompatActivity {
         }
 
     }
-//
-////    Xem video stream.
-//    private void loadPref(){
-//        SharedPreferences mySharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-//
-//        CameraURL = mySharedPreferences.getString("pref_camURL", CameraURL);
-//    }
 
-
-//    @Override
-//    protected void onPause() {
-//        if (mDoRead != null && !mDoRead.isCancelled()) {
-//            mDoRead.cancel(true);
-//            Log.d("TAG", "Cancel");
-//        }
-//        try {
-//            Thread.sleep(501); // Don't do this!!! Only for testing purposes!!!
-//        } catch (Exception e) {
-//        }
-//
-//        super.onPause();
-//    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity2_main, menu);
@@ -272,13 +234,8 @@ public class ControlActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
-//        Intent intent = new Intent();
-//        intent.setClass(ControlActivity.this, ViewStreamActivity.class);
-//        startActivityForResult(intent, 0);
         Intent intent = new Intent(ControlActivity.this, ViewStreamActivity.class);
         startActivity(intent);
-//        onPause();
         return true;
     }
 }

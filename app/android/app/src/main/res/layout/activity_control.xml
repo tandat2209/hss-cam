@@ -22,17 +22,16 @@
             android:layout_weight="0.91"
             android:weightSum="1">
 
-            <VideoView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+            <RelativeLayout
                 android:id="@+id/videoView"
-                android:layout_weight="0.73" />
-            <!--<VideoView-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="match_parent"-->
-                <!--android:id="@+id/videoView"-->
-                <!--android:layout_alignParentTop="true"-->
-                <!--android:layout_alignParentStart="true" />-->
+                android:layout_width="240dp"
+                android:layout_height="240dp"
+                android:background="@android:drawable/editbox_background"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentStart="true">
+            </RelativeLayout>
 
             <LinearLayout
                 android:orientation="vertical"
