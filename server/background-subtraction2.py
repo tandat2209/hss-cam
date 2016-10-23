@@ -8,6 +8,10 @@ ALLOWED_INTERRUPT_SECOND = 3 # 3s
 TAKE_PICTURE_SECOND = 10 # 10s
 
 cap = cv2.VideoCapture(0)
+fps = 200
+capSize = (640,480)
+fourcc = cv2.cv.CV_FOURCC('m', 'p', '4', 'v')
+vout = cv2.VideoWriter('1.mov', fourcc, fps, capSize, True)
 
 def main():
     prevFrame = None
@@ -69,11 +73,15 @@ def main():
         cv2.imshow("Frame Delta", frameDelta)
         cv2.imshow("Thresh", thresh)
 
+            # ret, frame = self.video.read()
+        # detectFrame = self.motionDetector.detect(frame)
+
+        vout.write(frame)
         prevFrame = curFrame
         k = cv2.waitKey(30) & 0xFF
         if k == 27:
             break
-
+    vout.release()
     cv2.destroyAllWindows()
 
 if __name__=="__main__":
