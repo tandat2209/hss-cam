@@ -2,33 +2,41 @@ package com.eshss.android;
 
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.VideoView;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
-import org.apache.http.impl.client.DefaultHttpClient;
-import android.view.View.OnTouchListener;
-import android.view.MotionEvent;
 
 
 public class ControlActivity extends AppCompatActivity {
+    private static final boolean DEBUG=false;
+    private static final String TAG = "MJPEG";
     Button btnCaptureimages, btnViewImage;
     VideoView vidView;
     private Button btn_cam_up, btn_cam_down, btn_cam_left, btn_cam_right;
     private MjpegView mv;
     MjpegInputStream inputStream;
+    private String url_ip = "http://iris.not.iac.es/axis-cgi/mjpg/video.cgi";
     private String CameraStreamURL = "http://192.168.1.239:81/media/?user=admin&pwd=&action=stream",
             CameraControlURL = "http://192.168.1.239:81/media/?user=admin&pwd=&action=cmd";
     VideoView videoView;
@@ -37,8 +45,8 @@ public class ControlActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_control);
-//
-//        vidView = (VideoView)findViewById(R.id.videoView);
+
+//        vidView = (VideoView)findViewById(R.id.Vid);
 //        String vidAddress = "http://iris.not.iac.es/axis-cgi/mjpg/video.cgi";
 //        Uri vidUri = Uri.parse(vidAddress);
 //        vidView.setVideoPath(vidAddress);
@@ -50,7 +58,9 @@ public class ControlActivity extends AppCompatActivity {
 
 //
 //https://archive.org/download/ksnn_compilation_master_the_internet/ksnn_compilation_master_the_internet_512kb.mp4
-//        VideoView videoView =(VideoView)findViewById(R.id.videoView);
+//        setContentView(R.layout.activity_view_stream);
+        //VideoView view = (findViewById(R.id.videoView));
+//        VideoView videoView =(VideoView)findViewById(R.id.Vid);
 //        MediaController mediaController= new MediaController(this);
 //        mediaController.setAnchorView(videoView);
 //        String urlComputerLocal = "http://192.168.137.190:5000",
@@ -61,22 +71,34 @@ public class ControlActivity extends AppCompatActivity {
 //        videoView.requestFocus();
 //        videoView.start();
 
-//        CameraURL = (String) getResources().getText(R.string.default_camURL);
-
+//        String CameraURL = (String) getResources().getText(R.string.default_camURL);
+//        mDoRead = new DoRead();
+//        mDoRead.execute(CameraURL);
 //        loadPref();
 
-
-
-
+//
 //        mv = new MjpegView(this);
 //        View stolenView = mv;
-//        setContentView(R.layout.activity_view_stream);
-//        View view =(findViewById(R.id.videoView));
+//
+//        setContentView(R.layout.activity_control);
+//        View view =(findViewById(R.id.Vid));
 //        ((ViewGroup) view).addView(stolenView);
 //        new DoRead().execute(CameraStreamURL);
 
 
+        mv = new MjpegView(this);
+        View stolenView = mv;
+        setContentView(R.layout.activity_control);
+        View view =(findViewById(R.id.Vid));
+        ((ViewGroup) view).addView(stolenView);
+        new DoRead().execute(CameraStreamURL);
 
+//        mv = new MjpegView(this);
+//        View stolenView = mv;
+//        setContentView(R.layout.activity_control);
+//        View view =(findViewById(R.id.Vid));
+//        ((ViewGroup) view).addView(stolenView);
+//        new DoRead().execute(url_ip);
 
 
 //        CameraURL = (String) getResources().getText(R.string.default_camURL);
@@ -190,27 +212,60 @@ public class ControlActivity extends AppCompatActivity {
         }
     }
 
+//    public class DoRead extends AsyncTask<String, Void, MjpegInputStream> {
+//        protected MjpegInputStream doInBackground(String... url) {
+//            //TODO: if camera has authentication deal with it and don't just not work
+//            HttpResponse res = null;
+//            org.apache.http.impl.client.DefaultHttpClient httpclient = new org.apache.http.impl.client.DefaultHttpClient();
+//            Log.d("helo", "1. Sending http request");
+//            try {
+//                res = httpclient.execute(new HttpGet(URI.create(url[0])));
+//                Log.d("helo", "2. Request finished, status = " + res.getStatusLine().getStatusCode());
+//                if (res.getStatusLine().getStatusCode() == 401) {
+//                    //You must turn off camera User Access Control before this will work
+//                    return null;
+//                }
+//                return new MjpegInputStream(res.getEntity().getContent());
+//            } catch (ClientProtocolException e) {
+//                e.printStackTrace();
+//                Log.d("helo", "Request failed-ClientProtocolException", e);
+//                //Error connecting to camera
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//                Log.d("helo", "Request failed-IOException", e);
+//                //Error connecting to camera
+//            }
+//            return null;
+//        }
+
     public class DoRead extends AsyncTask<String, Void, MjpegInputStream> {
         protected MjpegInputStream doInBackground(String... url) {
             //TODO: if camera has authentication deal with it and don't just not work
             HttpResponse res = null;
-            org.apache.http.impl.client.DefaultHttpClient httpclient = new org.apache.http.impl.client.DefaultHttpClient();
-            Log.d("helo", "1. Sending http request");
+            DefaultHttpClient httpclient = new DefaultHttpClient();
+            HttpParams httpParams = httpclient.getParams();
+            HttpConnectionParams.setConnectionTimeout(httpParams, 5 * 1000);
+            HttpConnectionParams.setSoTimeout(httpParams, 5 * 1000);
+            Log.d(TAG, "1. Sending http request");
             try {
                 res = httpclient.execute(new HttpGet(URI.create(url[0])));
-                Log.d("helo", "2. Request finished, status = " + res.getStatusLine().getStatusCode());
-                if (res.getStatusLine().getStatusCode() == 401) {
+                Log.d(TAG, "2. Request finished, status = " + res.getStatusLine().getStatusCode());
+                if(res.getStatusLine().getStatusCode()==401){
                     //You must turn off camera User Access Control before this will work
                     return null;
                 }
                 return new MjpegInputStream(res.getEntity().getContent());
             } catch (ClientProtocolException e) {
-                e.printStackTrace();
-                Log.d("helo", "Request failed-ClientProtocolException", e);
+                if(DEBUG){
+                    e.printStackTrace();
+                    Log.d(TAG, "Request failed-ClientProtocolException", e);
+                }
                 //Error connecting to camera
             } catch (IOException e) {
-                e.printStackTrace();
-                Log.d("helo", "Request failed-IOException", e);
+                if(DEBUG){
+                    e.printStackTrace();
+                    Log.d(TAG, "Request failed-IOException", e);
+                }
                 //Error connecting to camera
             }
             return null;

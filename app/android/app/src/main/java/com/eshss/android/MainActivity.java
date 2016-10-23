@@ -22,15 +22,16 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     Button btnConnect;
-    ListView listView=null;
+    ListView listView = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        listView=new ListView(this);
-        String[] items= {"Robot", "Arduino"," Arduino2","Arduino3","Arduino4","Arduino5"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.list_item, R.id.txtitem,items);
+        listView = new ListView(this);
+        String[] items = {"Robot", "Arduino", " Arduino2", "Arduino3", "Arduino4", "Arduino5"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.list_item, R.id.txtitem, items);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -50,9 +51,9 @@ public class MainActivity extends AppCompatActivity {
 //        btnConnect.setOnClickListener((View.OnClickListener) this);
     }
 
-    public void showDialogListView(View view){
+    public void showDialogListView(View view) {
 
-        AlertDialog.Builder builder=new
+        AlertDialog.Builder builder = new
                 AlertDialog.Builder(MainActivity.this);
 
         builder.setCancelable(true);
@@ -81,13 +82,14 @@ public class MainActivity extends AppCompatActivity {
                 });
 
 
-
         builder.setView(listView);
 
-        AlertDialog dialog=builder.create();
+        AlertDialog dialog = builder.create();
 
+        if (view.getParent() != null) {
+            ((ViewGroup) view.getParent()).removeView(view);
+        }
         dialog.show();
-
 
 
     }
