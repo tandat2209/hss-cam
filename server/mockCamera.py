@@ -11,20 +11,19 @@ class VideoCamera(object):
         # Using OpenCV to capture from device 0. If you have trouble capturing
         # from a webcam, comment the line below out and use a video file
         # instead.
-        # self.video = cv2.VideoCamera(0)
+        # self.video = cv2.VideoCapture(0)
         self.video = cv2.VideoCapture(cameraIPURL)
         # If you decide to use video.mp4, you must have this file in the folder
         # as the main.py.
         self.prevFrame = None
         self.motionDetector = MotionDetector()
-        self.videoWriter = cv2.VideoWriter('1.mov', fourcc, fps, capSize, True)
+        # self.videoWriter = cv2.VideoWriter('1.mov', fourcc, fps, capSize, True)
     
     def __del__(self):
         self.video.release()
     
 
     def get_frame(self):
-        
         ret, frame = self.video.read()
         detectFrame = self.motionDetector.detect(frame)
         ret, jpeg = cv2.imencode('.jpg', detectFrame)

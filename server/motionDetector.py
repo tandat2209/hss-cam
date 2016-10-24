@@ -10,7 +10,7 @@ ERODE_KERNEL = np.ones((3,3), np.uint8)
 DILATE_KERNEL = np.ones((3,3), np.uint8)
 
 DETECT_SECOND = 2
-TAKE_PICTURE_SECOND = 10
+TAKE_PICTURE_SECOND = 50
 
 class MotionDetector(object):
     def __init__(self):
@@ -41,7 +41,6 @@ class MotionDetector(object):
         contours, _ = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         for c in contours:
             contourArea = cv2.contourArea(c)
-            print contourArea
             if contourArea < MIN_COUNTOUR_AREA or contourArea > MAX_COUNTOUR_AREA:
                 continue
             if(datetime.now() - self.prevDetectTime).total_seconds() > DETECT_SECOND:
