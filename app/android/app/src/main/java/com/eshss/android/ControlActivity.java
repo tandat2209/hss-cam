@@ -4,38 +4,29 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
-import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.VideoView;
+import android.widget.ImageButton;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URI;
 
 
 public class ControlActivity extends AppCompatActivity {
     private static final boolean DEBUG=false;
     private static final String TAG = "MJPEG";
 
-    private Button btn_cam_up, btn_cam_down, btn_cam_left, btn_cam_right;
+    private ImageButton btn_cam_up, btn_cam_down, btn_cam_left, btn_cam_right;
     private WebView webView;
 
     // for emulator android genymotion
@@ -51,10 +42,10 @@ public class ControlActivity extends AppCompatActivity {
         setContentView(R.layout.activity_control);
 
         webView = (WebView) findViewById(R.id.webView);
-        btn_cam_up = (Button) findViewById(R.id.button_top);
-        btn_cam_down = (Button) findViewById(R.id.button_bot);
-        btn_cam_left = (Button) findViewById(R.id.button_left);
-        btn_cam_right = (Button) findViewById(R.id.button_right);
+        btn_cam_up = (ImageButton) findViewById(R.id.button_top);
+        btn_cam_down = (ImageButton) findViewById(R.id.button_bot);
+        btn_cam_left = (ImageButton) findViewById(R.id.button_left);
+        btn_cam_right = (ImageButton) findViewById(R.id.button_right);
 
         // load video inside webview
 //        webView.setWebViewClient(new WebViewClient());
