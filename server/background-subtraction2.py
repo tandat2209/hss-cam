@@ -7,7 +7,8 @@ DETECT_SECOND = 2 # 2s
 ALLOWED_INTERRUPT_SECOND = 3 # 3s
 TAKE_PICTURE_SECOND = 10 # 10s
 
-cap = cv2.VideoCapture(0)
+cameraIPURL = "http://admin@192.168.1.239:81/media/?&user=admin&pwd=&action=stream&.mjpeg"
+cap = cv2.VideoCapture(cameraIPURL)
 fps = 200
 capSize = (640,480)
 fourcc = cv2.cv.CV_FOURCC('m', 'p', '4', 'v')
@@ -23,6 +24,7 @@ def main():
     while True:
         ret, frame = cap.read()
         if not ret:
+            print "Error"
             break
 
         # process frame
@@ -75,8 +77,6 @@ def main():
 
             # ret, frame = self.video.read()
         # detectFrame = self.motionDetector.detect(frame)
-
-        vout.write(frame)
         prevFrame = curFrame
         k = cv2.waitKey(30) & 0xFF
         if k == 27:
