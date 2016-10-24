@@ -24,7 +24,8 @@
             android:launchMode="singleTop"
             android:screenOrientation="landscape"></activity>
         <activity android:name=".ControlActivity"
-            android:launchMode="singleTop">
+            android:launchMode="singleTop"
+            android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

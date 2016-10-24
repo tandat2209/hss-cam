@@ -2,7 +2,8 @@ import cv2
 import numpy as np
 from datetime import datetime
 
-MIN_COUNTOUR_AREA = 500
+MIN_COUNTOUR_AREA = 10000
+MAX_COUNTOUR_AREA = 90000
 BLUR_FILTER_MASK_SIZE = 11
 MORPH_CLOSE_KERNEL = np.ones((71,71),np.uint8)
 ERODE_KERNEL = np.ones((3,3), np.uint8)
@@ -39,7 +40,9 @@ class MotionDetector(object):
        
         contours, _ = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         for c in contours:
-            if cv2.contourArea(c) < MIN_COUNTOUR_AREA:
+            contourArea = cv2.contourArea(c)
+            print contourArea
+            if contourArea < MIN_COUNTOUR_AREA or contourArea > MAX_COUNTOUR_AREA:
                 continue
             if(datetime.now() - self.prevDetectTime).total_seconds() > DETECT_SECOND:
                 if (not self.hasSomeThing): 
