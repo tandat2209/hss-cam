@@ -9,4 +9,12 @@
     <!--<string name="default_camURL"><![CDATA[http://trackfield.webcam.oregonstate.edu/axis-cgi/mjpg/video.cgi]]></string>-->
     <string name="default_camURL"><![CDATA[http://192.168.1.239:81/media/?action=stream&user=admin&pwd=]]></string>
     <string name="default_camControlURL"><![CDATA[http://192.168.1.239:81/media/?user=admin&pwd=&action=cmd&code=2&value=]]></string>
+
+    <string name="button_connect">Connect</string>
+    <string name="button_disconnect">Disconnect</string>
+    <string name="title_devices">Bluetooth</string>
+    <string name="action_settings">Settings</string>
+    <string name="scan">Scan</string>
+    <string name="stopScan">Stop Scanning</string>
+
 </resources>
