@@ -3,6 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 23
     buildToolsVersion "23.0.3"
+    useLibrary 'org.apache.http.legacy'
     defaultConfig {
         applicationId "com.eshss.android"
         minSdkVersion 19
@@ -26,4 +27,5 @@ dependencies {
     })
     compile 'com.android.support:appcompat-v7:23.4.0'
     testCompile 'junit:junit:4.12'
+    compile group: 'cz.msebera.android' , name: 'httpclient', version: '4.4.1.1'
 }

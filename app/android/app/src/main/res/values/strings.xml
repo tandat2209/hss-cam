@@ -1,8 +1,12 @@
 <resources>
-    <string name="app_name"></string>
+    <string name="app_name">HSS-Camera</string>
 
     <string name="btn_connect">Connect To Camera</string>
     <string name="menu_control">Control</string>
     <string name="menu_fullview">FullView</string>
 
+    <!--<string name="default_camURL"><![CDATA[http://iris.not.iac.es/axis-cgi/mjpg/video.cgi]]></string>-->
+    <!--<string name="default_camURL"><![CDATA[http://trackfield.webcam.oregonstate.edu/axis-cgi/mjpg/video.cgi]]></string>-->
+    <string name="default_camURL"><![CDATA[http://192.168.1.239:81/media/?action=stream&user=admin&pwd=]]></string>
+    <string name="default_camControlURL"><![CDATA[http://192.168.1.239:81/media/?user=admin&pwd=&action=cmd&code=2&value=]]></string>
 </resources>
