@@ -102,6 +102,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+/**
+ * Created by ngotien on 10/24/16.
+ */
 public class MjpegInputStream extends DataInputStream {
     private static final String TAG = "MjpegInputStream";
 

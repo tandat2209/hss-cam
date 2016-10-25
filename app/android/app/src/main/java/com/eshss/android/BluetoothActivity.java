@@ -3,13 +3,16 @@ package com.eshss.android;
 import android.bluetooth.BluetoothAdapter;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
+
+/**
+ * Created by ngotien on 10/24/16.
+ */
 
 public class BluetoothActivity extends AppCompatActivity implements  DeviceListFragment.OnFragmentInteractionListener {
 

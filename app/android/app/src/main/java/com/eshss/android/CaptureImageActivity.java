@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+/**
+ * Created by ngotien on 10/24/16.
+ */
 public class CaptureImageActivity extends AppCompatActivity {
 
     @Override

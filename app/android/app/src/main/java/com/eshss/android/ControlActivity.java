@@ -11,7 +11,9 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
+import android.widget.Switch;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -21,13 +23,18 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+/**
+ * Created by ngotien on 10/24/16.
+ */
 
 public class ControlActivity extends AppCompatActivity {
     private static final boolean DEBUG=false;
     private static final String TAG = "MJPEG";
 
     private ImageButton btn_cam_up, btn_cam_down, btn_cam_left, btn_cam_right;
+    private ImageButton btn_cam_up_b, btn_cam_down_b, btn_cam_left_b, btn_cam_right_b;
     private WebView webView;
+    private Switch swichMode;
 
     // for emulator android genymotion
     // TODO: fix for real device
@@ -40,7 +47,7 @@ public class ControlActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_control);
-
+        swichMode = (Switch) findViewById(R.id.switch_auto);
         webView = (WebView) findViewById(R.id.webView);
         btn_cam_up = (ImageButton) findViewById(R.id.button_top);
         btn_cam_down = (ImageButton) findViewById(R.id.button_bot);
@@ -54,7 +61,7 @@ public class ControlActivity extends AppCompatActivity {
 
         btn_cam_left.setOnTouchListener(new OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
-                if(event.getAction() == MotionEvent.ACTION_DOWN) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     String URL = CameraControlURL + "&code=2&value=3";
                     new HandlingData().execute(URL);
                 } else if (event.getAction() == MotionEvent.ACTION_UP) {
@@ -100,7 +107,29 @@ public class ControlActivity extends AppCompatActivity {
                 return false;
             }
         });
+
+        swichMode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked) {
+                    btn_cam_up.setEnabled(false);
+                    btn_cam_down.setEnabled(false);
+                    btn_cam_left.setEnabled(false);
+                    btn_cam_right.setEnabled(false);
+                } else {
+                    btn_cam_up.setEnabled(true);
+                    btn_cam_down.setEnabled(true);
+                    btn_cam_left.setEnabled(true);
+                    btn_cam_right.setEnabled(true);
+                }
+            }
+        });
+
+
     }
+
+
+
 
     private class MyBrowser extends WebViewClient {
         @Override
@@ -153,6 +182,8 @@ public class ControlActivity extends AppCompatActivity {
         startActivity(intent);
         return true;
     }
+
+
 }
 
 
