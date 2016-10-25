@@ -1,12 +1,11 @@
 import os
 import sys
+import time
 sys.path.insert(0, os.path.abspath('.'))
 # from camera_api.camera import Camera
-# # import camera_api.config as config
+import camera_api.config as config
 from mockCamera import VideoCamera;
 
-import time
-import argparse
 from flask import Flask, render_template, Response, jsonify, url_for
 
 
@@ -17,6 +16,7 @@ STATIC_FOLDER = 'gallery'
 
 # Init Flask app & Camera object
 app = Flask(__name__, static_folder=STATIC_FOLDER)
+camera = VideoCamera()
 # ip_camera = Camera(config.DEFAULT_CAMERA_IP, config.USER_NAME, config.PASSWORD)
 
 
@@ -38,7 +38,7 @@ def index():
 @app.route('/video_feed')
 def video_feed():
     """Video streaming route."""
-    return Response(gen(VideoCamera()),
+    return Response(gen(camera),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
@@ -59,7 +59,10 @@ def capture_image():
     Capture image and save to local storage when user
     press 'Capture' button on Android client.
     """
-    pass
+    file_name = time.strftime("%Y%m%d%H%M%S") + '.jpg'
+    path = os.path.join(app.static_folder, file_name)
+    camera.save_frame_to_image(path)
+    return jsonify({'success': 'true'})
 
 
 @app.route('/gallery', methods=['GET'])
@@ -74,7 +77,7 @@ def gallery():
         images.append({
             'url': url_for('static', filename=name, _external=True),
             'name': name,
-            'date_captured': time.ctime(os.path.getctime(os.path.join(app.static_folder, name))) 
+            'date_captured': time.ctime(os.path.getctime(os.path.join(app.static_folder, name)))
         })
     return jsonify(images)
 
@@ -86,17 +89,6 @@ def gallery_image(filename):
 
 
 
-if __name__ == '__main__':
-    # Construct the argument parser and parse the arguments
-    ap = argparse.ArgumentParser()
-    ap.add_argument("-c", "--camera", help="URL of IP Camera")
-    args = vars(ap.parse_args())
-
-    # If the camera argument is not None,
-    # then we set it to CAMERA_URL variable
-    # otherwise we use default value
-    if args.get('camera', None) is not None:
-        CAMERA_URL = args['camera']
-    
+if __name__ == '__main__':    
     # Run the app
     app.run(host='0.0.0.0', threaded=True)
