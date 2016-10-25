@@ -48,7 +48,7 @@ public class ControlActivity extends AppCompatActivity {
 
     // for emulator android genymotion
     // TODO: fix for real device
-    private String webViewURL = "http://192.168.67.101:5000";
+    private String webViewURL = "http://192.168.1.101:5000";
 
     private String CameraStreamURL = "http://192.168.1.239:81/media/?user=admin&pwd=&action=stream",
             CameraControlURL = "http://192.168.1.239:81/media/?user=admin&pwd=&action=cmd",
@@ -127,21 +127,21 @@ public class ControlActivity extends AppCompatActivity {
 //                    new HandlingData().execute(URL);
                 } else if (event.getAction() == MotionEvent.ACTION_UP) {
                     String URL = CameraCaptureURL;
-                    try {
-                        Boolean isSaved = new GetImage().execute(URL).get();
-                        if(isSaved == false){
-                            Toast.makeText(getApplicationContext(), "Can not capture image...", Toast.LENGTH_LONG).show();
-                        } else{
-                            Toast.makeText(getApplicationContext(), "Saved image", Toast.LENGTH_SHORT).show();
-//                            sendBroadcast(new Intent(
-//                                    Intent.ACTION_MEDIA_MOUNTED,
-//                                    Uri.parse("file://" + Environment.getExternalStorageDirectory())));
-                        }
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    } catch (ExecutionException e) {
-                        e.printStackTrace();
-                    }
+//                    try {
+                        new HandlingData().execute(webViewURL+"/capture_image");
+//                        if(isSaved == false){
+//                            Toast.makeText(getApplicationContext(), "Can not capture image...", Toast.LENGTH_LONG).show();
+//                        } else{
+//                            Toast.makeText(getApplicationContext(), "Saved image", Toast.LENGTH_SHORT).show();
+////                            sendBroadcast(new Intent(
+////                                    Intent.ACTION_MEDIA_MOUNTED,
+////                                    Uri.parse("file://" + Environment.getExternalStorageDirectory())));
+//                        }
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    } catch (ExecutionException e) {
+//                        e.printStackTrace();
+//                    }
                 }
                 return false;
             }

@@ -154,7 +154,7 @@ public class DeviceListFragment extends Fragment implements AbsListView.OnItemCl
             Toast.makeText(getActivity().getApplicationContext(), "Can not connect to this device", Toast.LENGTH_LONG).show();
         }
         else{
-            Intent intent = new Intent(getActivity(), ControlActivity.class);
+            Intent intent = new Intent(getActivity(), ViewStreamActivity.class);
             // TODO: put information about bluetooth device
             startActivity(intent);
         }
