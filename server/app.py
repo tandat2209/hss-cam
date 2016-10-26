@@ -16,7 +16,6 @@ STATIC_FOLDER = 'gallery'
 
 # Init Flask app & Camera object
 app = Flask(__name__, static_folder=STATIC_FOLDER)
-camera = VideoCamera()
 # ip_camera = Camera(config.DEFAULT_CAMERA_IP, config.USER_NAME, config.PASSWORD)
 
 
@@ -38,7 +37,7 @@ def index():
 @app.route('/video_feed')
 def video_feed():
     """Video streaming route."""
-    return Response(gen(camera),
+    return Response(gen(VideoCamera()),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
@@ -61,7 +60,7 @@ def capture_image():
     """
     file_name = time.strftime("%Y%m%d%H%M%S") + '.jpg'
     path = os.path.join(app.static_folder, file_name)
-    camera.save_frame_to_image(path)
+    VideoCamera().save_frame_to_image(path)
     return jsonify({'success': 'true'})
 
 
