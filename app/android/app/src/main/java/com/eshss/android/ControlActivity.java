@@ -53,11 +53,11 @@ public class ControlActivity extends AppCompatActivity {
         setContentView(R.layout.activity_control);
 
         webView = (WebView) findViewById(R.id.webView);
-        btn_cam_up = (Button) findViewById(R.id.button_top);
-        btn_cam_down = (Button) findViewById(R.id.button_bot);
-        btn_cam_left = (Button) findViewById(R.id.button_left);
-        btn_cam_right = (Button) findViewById(R.id.button_right);
-
+        btn_cam_up = (ImageButton) findViewById(R.id.button_top);
+        btn_cam_down = (ImageButton) findViewById(R.id.button_bot);
+        btn_cam_left = (ImageButton) findViewById(R.id.button_left);
+        btn_cam_right = (ImageButton) findViewById(R.id.button_right);
+        swichMode = (Switch) findViewById(R.id.switch_auto);
         // load video inside webview
 //        webView.setWebViewClient(new WebViewClient());
 
@@ -116,15 +116,10 @@ public class ControlActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked) {
-                    btn_cam_up.setEnabled(false);
-                    btn_cam_down.setEnabled(false);
-                    btn_cam_left.setEnabled(false);
-                    btn_cam_right.setEnabled(false);
+                    Intent intent = new Intent(ControlActivity.this, BluetoothActivity.class);
+                    startActivity(intent);
                 } else {
-                    btn_cam_up.setEnabled(true);
-                    btn_cam_down.setEnabled(true);
-                    btn_cam_left.setEnabled(true);
-                    btn_cam_right.setEnabled(true);
+
                 }
             }
         });
