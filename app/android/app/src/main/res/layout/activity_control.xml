@@ -14,9 +14,8 @@
             android:layout_weight="0.91"
             android:weightSum="1">
         <WebView
-            android:layout_width="match_parent"
+            android:layout_width="354dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.91"
             android:id="@+id/webView" />
     </LinearLayout>
 
@@ -30,7 +29,7 @@
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="25dp">
+                android:layout_height="35dp">
 
                 <Switch
                     android:layout_width="118dp"
@@ -38,8 +37,8 @@
                     android:text="Auto mode"
                     android:id="@+id/switch_auto"
                     android:checked="false"
-                    android:layout_marginLeft="30dp"
-                    android:layout_marginTop="-10dp"
+                    android:layout_marginLeft="50dp"
+                    android:layout_marginTop="0dp"
                     android:layout_marginBottom="2dp" />
             </LinearLayout>
 
@@ -47,41 +46,50 @@
                 android:layout_width="130dp"
                 android:layout_height="130dp"
                 android:layout_gravity="center_vertical"
-                android:layout_marginLeft="30dp"
+                android:layout_marginLeft="50dp"
                 android:layout_marginRight="-10dp"
                 android:layout_marginTop="-10dp">
 
-                <Button
+                <ImageButton
                     style="?android:attr/buttonStyleSmall"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:id="@+id/button_left"
                     android:layout_gravity="left|center_vertical"
-                    android:text="L" />
+                    android:text="L"
+                    android:src="@drawable/leftaa"
+                    android:background="#00000000" />
 
-                <Button
+                <ImageButton
                     style="?android:attr/buttonStyleSmall"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:text="R"
                     android:id="@+id/button_right"
-                    android:layout_gravity="right|center_vertical" />
+                    android:layout_gravity="right|center_vertical"
+                    android:src="@drawable/rightaa"
+                    android:background="#00000000" />
 
-                <Button
+                <ImageButton
                     style="?android:attr/buttonStyleSmall"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:text="B"
                     android:id="@+id/button_bot"
-                    android:layout_gravity="center_horizontal|bottom" />
+                    android:layout_gravity="center_horizontal|bottom"
+                    android:src="@drawable/botaa"
+                    android:background="#00000000" />
 
-                <Button
+                <ImageButton
                     style="?android:attr/buttonStyleSmall"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:text="T"
                     android:layout_gravity="center_horizontal|top"
-                    android:id="@+id/button_top" />
+                    android:id="@+id/button_top"
+                    android:src="@drawable/topaa"
+                    android:background="#00000000" />
+
 
             </FrameLayout>
 
@@ -90,19 +98,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <Button
+                <Button style="@style/Widget.AppCompat.Button.Colored"
                     android:layout_width="132dp"
                     android:layout_height="38dp"
                     android:text="Capture"
                     android:id="@+id/button_captureimages"
-                    android:layout_marginLeft="30dp" />
+                    android:layout_marginLeft="50dp" />
 
-                <Button
+                <Button style="@style/Widget.AppCompat.Button.Colored"
                     android:layout_width="135dp"
                     android:layout_height="38dp"
                     android:text="View Image"
                     android:id="@+id/button_viewimages"
-                    android:layout_marginLeft="30dp"
+                    android:layout_marginLeft="50dp"
                     android:layout_marginTop="-5dp" />
             </LinearLayout>
 
