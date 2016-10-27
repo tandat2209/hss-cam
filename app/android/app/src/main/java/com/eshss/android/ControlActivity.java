@@ -1,8 +1,13 @@
 package com.eshss.android;
 
+import android.app.ProgressDialog;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -16,6 +21,7 @@ import android.webkit.WebViewClient;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.Switch;
+import android.widget.Toast;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -25,15 +31,28 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 
 import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
+import java.util.UUID;
 
 
 public class ControlActivity extends AppCompatActivity {
     private static final boolean DEBUG=false;
     private static final String TAG = "MJPEG";
+
+    private ProgressDialog mProgressDialog;
+
+    BluetoothAdapter mBluetoothAdapter = null;
+
+    BluetoothSocket mBluetoothSocket = null;
+
+    BluetoothDevice bluetoothDevice = null;
+
+    private boolean isBTConnected = false;
+
 
     private ImageButton btn_cam_up, btn_cam_down, btn_cam_left, btn_cam_right;
     private ImageButton btn_cam_up_b, btn_cam_down_b, btn_cam_left_b, btn_cam_right_b;
@@ -47,79 +66,104 @@ public class ControlActivity extends AppCompatActivity {
     private String CameraStreamURL = "http://192.168.1.239:81/media/?user=admin&pwd=&action=stream",
             CameraControlURL = "http://192.168.1.239:81/media/?user=admin&pwd=&action=cmd";
 
+    private String mAddress;
+
+    private boolean isAutoMode = false;
+
+    private MyCamera camera = new MyCamera();
+    private ReadDataFromBT readDataFromBT = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_control);
 
+        Intent newIntent = getIntent();
+        mAddress = newIntent.getStringExtra(DeviceListFragment.EXTRA_ADDRESS);
+        if(mAddress != null) new ConnectBT().execute();
         webView = (WebView) findViewById(R.id.webView);
         btn_cam_up = (ImageButton) findViewById(R.id.button_top);
         btn_cam_down = (ImageButton) findViewById(R.id.button_bot);
         btn_cam_left = (ImageButton) findViewById(R.id.button_left);
         btn_cam_right = (ImageButton) findViewById(R.id.button_right);
         swichMode = (Switch) findViewById(R.id.switch_auto);
-        // load video inside webview
-//        webView.setWebViewClient(new WebViewClient());
 
+        // load video inside webview
+        webView.setWebViewClient(new WebViewClient());
         webView.loadUrl(webViewURL);
 
         btn_cam_left.setOnTouchListener(new OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
-                if(event.getAction() == MotionEvent.ACTION_DOWN) {
-                    String URL = CameraControlURL + "&code=2&value=3";
-                    new HandlingData().execute(URL);
-                } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                    String URL = CameraControlURL + "&code=3&value=3";
-                    new HandlingData().execute(URL);
+                if(!isAutoMode){
+                    if(event.getAction() == MotionEvent.ACTION_DOWN) {
+                        camera.turn(MyCamera.LEFT);
+                    } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                        camera.stop(MyCamera.LEFT);
+                    }
                 }
                 return false;
             }
         });
         btn_cam_right.setOnTouchListener(new OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
-                if(event.getAction() == MotionEvent.ACTION_DOWN) {
-                    String URL = CameraControlURL + "&code=2&value=4";
-                    new HandlingData().execute(URL);
-                } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                    String URL = CameraControlURL + "&code=3&value=4";
-                    new HandlingData().execute(URL);
+                if(!isAutoMode){
+                    if(event.getAction() == MotionEvent.ACTION_DOWN) {
+                        camera.turn(MyCamera.RIGHT);
+                    } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                        camera.stop(MyCamera.RIGHT);
+                    }
                 }
                 return false;
             }
         });
         btn_cam_up.setOnTouchListener(new OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
-                if(event.getAction() == MotionEvent.ACTION_DOWN) {
-                    String URL = CameraControlURL + "&code=2&value=1";
-                    new HandlingData().execute(URL);
-                } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                    String URL = CameraControlURL + "&code=3&value=1";
-                    new HandlingData().execute(URL);
+                if(!isAutoMode){
+                    if(event.getAction() == MotionEvent.ACTION_DOWN) {
+                        camera.turn(MyCamera.UP);
+                    } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                        camera.stop(MyCamera.UP);
+                    }
                 }
                 return false;
             }
         });
         btn_cam_down.setOnTouchListener(new OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
-                if(event.getAction() == MotionEvent.ACTION_DOWN) {
-                    String URL = CameraControlURL + "&code=2&value=2";
-                    new HandlingData().execute(URL);
-                } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                    String URL = CameraControlURL + "&code=3&value=2";
-                    new HandlingData().execute(URL);
+                if(!isAutoMode){
+                    if(event.getAction() == MotionEvent.ACTION_DOWN) {
+                        camera.turn(MyCamera.DOWN);
+                    } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                        camera.stop(MyCamera.DOWN);
+                    }
                 }
                 return false;
             }
         });
 
+
         swichMode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                Log.d("SWITCH", isChecked+"");
                 if(isChecked) {
-                    Intent intent = new Intent(ControlActivity.this, BluetoothActivity.class);
-                    startActivity(intent);
-                } else {
+                    if(!isBTConnected) {
+                        Intent intent = new Intent(ControlActivity.this, BluetoothActivity.class);
+                        startActivity(intent);
+                    } else{
+                        if(readDataFromBT == null || readDataFromBT.isCancelled()){
+                            readDataFromBT = new ReadDataFromBT();
+                            readDataFromBT.execute();
+                        }
+                        isAutoMode = true;
+                        swichMode.setChecked(true);
+                    }
 
+                } else {
+                    if(readDataFromBT != null && !readDataFromBT.isCancelled()){
+                        readDataFromBT.cancel(true);
+                    }
+                    swichMode.setChecked(false);
+                    isAutoMode = false;
                 }
             }
         });
@@ -127,44 +171,37 @@ public class ControlActivity extends AppCompatActivity {
 
     }
 
-    private class MyBrowser extends WebViewClient {
-        @Override
-        public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            view.loadUrl(url);
-            return true;
-        }
-    }
-
-    // Xử lý URL
-    private class HandlingData extends AsyncTask<String, Void, String> {
-        @Override
-        protected String doInBackground(String... urls) {
-            String response = "";
-            for (String url : urls) {
-                DefaultHttpClient client = new DefaultHttpClient();
-                HttpGet httpGet = new HttpGet(url);
-                try {
-                    HttpResponse execute = client.execute(httpGet);
-                    InputStream content = execute.getEntity().getContent();
-
-                    BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
-                    String s = "";
-                    while ((s = buffer.readLine()) != null) {
-                        response += s;
-                    }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-            return response;
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            //textView.setText(result);
-        }
-    }
+//
+//    // Xử lý URL
+//    private class HandlingData extends AsyncTask<String, Void, String> {
+//        @Override
+//        protected String doInBackground(String... urls) {
+//            String response = "";
+//            for (String url : urls) {
+//                DefaultHttpClient client = new DefaultHttpClient();
+//                HttpGet httpGet = new HttpGet(url);
+//                try {
+//                    HttpResponse execute = client.execute(httpGet);
+//                    InputStream content = execute.getEntity().getContent();
+//
+//                    BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
+//                    String s = "";
+//                    while ((s = buffer.readLine()) != null) {
+//                        response += s;
+//                    }
+//
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//            return response;
+//        }
+//
+//        @Override
+//        protected void onPostExecute(String result) {
+//            //textView.setText(result);
+//        }
+//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -177,6 +214,113 @@ public class ControlActivity extends AppCompatActivity {
         Intent intent = new Intent(ControlActivity.this, ViewStreamActivity.class);
         startActivity(intent);
         return true;
+    }
+
+
+    private class ConnectBT extends AsyncTask<Void, Void, Void> {
+
+        private boolean isConnectSuccess = true;
+
+        @Override
+        protected void onPreExecute() {
+            mProgressDialog = ProgressDialog.show(ControlActivity.this, "Connecting...", "Please wait!!!");
+        }
+
+        @Override
+        protected Void doInBackground(Void... devices) {
+
+            if (mBluetoothSocket == null || !isBTConnected) {
+                try {
+
+                    mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+                    bluetoothDevice = mBluetoothAdapter.getRemoteDevice(mAddress);
+                    UUID uuid = UUID.fromString("fb36491d-7c21-40ef-9f67-a63237b5bbea");
+                    mBluetoothSocket = bluetoothDevice.createInsecureRfcommSocketToServiceRecord(uuid);
+                    BluetoothAdapter.getDefaultAdapter().cancelDiscovery();
+                    mBluetoothSocket.connect();
+
+                } catch (IOException e) {
+                    try {
+                        // try again
+                        mBluetoothSocket =(BluetoothSocket) bluetoothDevice.getClass().getMethod("createRfcommSocket", new Class[] {int.class}).invoke(bluetoothDevice,1);
+                        mBluetoothSocket.connect();
+                    } catch(Exception ex) {
+                        ex.printStackTrace();
+                        isConnectSuccess = false;
+                    }
+                    isConnectSuccess = true;
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+
+            if (!isConnectSuccess) {
+                Toast.makeText(getApplicationContext(),"Connection Failed. Is it a SPP Bluetooth? Try again", Toast.LENGTH_LONG).show();
+                finish();
+            } else {
+                Toast.makeText(getApplicationContext(), "Bluetooth connected", Toast.LENGTH_LONG).show();
+                isBTConnected = true;
+                readDataFromBT = new ReadDataFromBT();
+                readDataFromBT.execute();
+                isAutoMode = true;
+                swichMode.setChecked(true);
+            }
+            mProgressDialog.dismiss();
+        }
+    }
+
+
+    private class ReadDataFromBT extends AsyncTask<Void, Void, Void>{
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            byte[] buffer = new byte[1024];
+            int bytes;
+            String msgReceived = "";
+            while (!isCancelled()) {
+                try {
+                    InputStream input = mBluetoothSocket.getInputStream();
+                    DataInputStream inputStream = new DataInputStream(input);
+                    bytes = inputStream.read(buffer);
+                    String strReceived = new String(buffer, 0, bytes);
+                    msgReceived = String.valueOf(bytes) +
+                            " bytes received:\n"
+                            + strReceived;
+                    Log.d("CONTROLACTIVITY", msgReceived);
+                    if(isAutoMode){
+                        switch (strReceived){
+                            case "L":
+                                camera.execute(MyCamera.CameraTurnLeftURL);
+                                break;
+                            case "R":
+                                camera.execute(MyCamera.CameraTurnRightURL);
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    isAutoMode = false;
+                    isBTConnected = false;
+                    cancel(true);
+                    break;
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            if(!isAutoMode){
+                swichMode.setChecked(isAutoMode);
+            }
+        }
     }
 }
 

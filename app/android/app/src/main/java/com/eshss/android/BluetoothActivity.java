@@ -16,6 +16,7 @@ import android.view.MenuItem;
 
 public class BluetoothActivity extends AppCompatActivity implements  DeviceListFragment.OnFragmentInteractionListener {
 
+
     private DeviceListFragment mDeviceListFragment;
     private int REQUEST_BLUETOOTH = 1;
     private BluetoothAdapter BTAdapter;

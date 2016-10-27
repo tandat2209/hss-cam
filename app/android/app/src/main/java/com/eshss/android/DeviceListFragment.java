@@ -34,6 +34,8 @@ import java.util.UUID;
  */
 
 public class DeviceListFragment extends Fragment implements AbsListView.OnItemClickListener {
+    public static String EXTRA_ADDRESS = "device_address";
+
     private ArrayList<DeviceItem> deviceItemList;
 
     private OnFragmentInteractionListener mListener;
@@ -146,23 +148,30 @@ public class DeviceListFragment extends Fragment implements AbsListView.OnItemCl
         Log.d("DEVICELIST", "onItemClick position: " + position +
                 " id: " + id + " name: " + deviceItemList.get(position).getDeviceName() + deviceItemList.get(position).getAddress()+ "\n");
         DeviceItem device = deviceItemList.get(position);
-        UUID uuid =  UUID.fromString("fb36491d-7c21-40ef-9f67-a63237b5bbea");
-        ConnectThread connectThread = new ConnectThread(bTAdapter.getRemoteDevice(device.getAddress()),  uuid);
-        boolean isConnected = connectThread.connect();
+        String address = device.getAddress();
+        Intent intent = new Intent(getActivity(), ControlActivity.class);
+        intent.putExtra(EXTRA_ADDRESS, address);
+        startActivity(intent);
 
-        if(isConnected == false){
-            Toast.makeText(getActivity().getApplicationContext(), "Can not connect to this device", Toast.LENGTH_LONG).show();
-        }
-        else{
-            Intent intent = new Intent(getActivity(), ViewStreamActivity.class);
-            // TODO: put information about bluetooth device
-            startActivity(intent);
-        }
-        if (null != mListener) {
-            // Notify the active callbacks interface (the activity, if the
-            // fragment is attached to one) that an item has been selected.
-            mListener.onFragmentInteraction(deviceItemList.get(position).getDeviceName());
-        }
+//        UUID uuid =  UUID.fromString("fb36491d-7c21-40ef-9f67-a63237b5bbea");
+//        ConnectThread connectThread = new ConnectThread(bTAdapter.getRemoteDevice(device.getAddress()),  uuid);
+//        boolean isConnected = connectThread.connect();
+//
+//
+//        if(isConnected == false){
+//            Toast.makeText(getActivity().getApplicationContext(), "Can not connect to this device", Toast.LENGTH_LONG).show();
+//        }
+//        else{
+//            bTAdapter.cancelDiscovery();
+//            Intent intent = new Intent(getActivity(), ControlActivity.class);
+//            // TODO: put information about bluetooth device
+//            startActivity(intent);
+//        }
+//        if (null != mListener) {
+//            // Notify the active callbacks interface (the activity, if the
+//            // fragment is attached to one) that an item has been selected.
+//            mListener.onFragmentInteraction(deviceItemList.get(position).getDeviceName());
+//        }
     }
 
     public void setEmptyText(CharSequence emptyText) {
