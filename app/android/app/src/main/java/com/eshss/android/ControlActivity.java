@@ -16,6 +16,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.CompoundButton;
@@ -54,17 +57,14 @@ public class ControlActivity extends AppCompatActivity {
     private boolean isBTConnected = false;
 
 
-    private ImageButton btn_cam_up, btn_cam_down, btn_cam_left, btn_cam_right;
+    private ImageButton btn_cam_up, btn_cam_down, btn_cam_left, btn_cam_right, btn_fullscreen;
     private ImageButton btn_cam_up_b, btn_cam_down_b, btn_cam_left_b, btn_cam_right_b;
     private WebView webView;
     private Switch swichMode;
 
     // for emulator android genymotion
     // TODO: fix for real device
-    private String webViewURL = "http://10.0.3.2:5000";
-
-    private String CameraStreamURL = "http://192.168.1.239:81/media/?user=admin&pwd=&action=stream",
-            CameraControlURL = "http://192.168.1.239:81/media/?user=admin&pwd=&action=cmd";
+    private String webViewURL = MyCamera.StreamURL;
 
     private String mAddress;
 
@@ -75,6 +75,10 @@ public class ControlActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // remove title
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getSupportActionBar().hide();
         setContentView(R.layout.activity_control);
 
         Intent newIntent = getIntent();
@@ -85,10 +89,14 @@ public class ControlActivity extends AppCompatActivity {
         btn_cam_down = (ImageButton) findViewById(R.id.button_bot);
         btn_cam_left = (ImageButton) findViewById(R.id.button_left);
         btn_cam_right = (ImageButton) findViewById(R.id.button_right);
+        btn_fullscreen = (ImageButton) findViewById(R.id.btn_fullscreen);
         swichMode = (Switch) findViewById(R.id.switch_auto);
 
         // load video inside webview
         webView.setWebViewClient(new WebViewClient());
+        WebSettings settings = webView.getSettings();
+        settings.setLoadWithOverviewMode(true);
+        settings.setUseWideViewPort(true);
         webView.loadUrl(webViewURL);
 
         btn_cam_left.setOnTouchListener(new OnTouchListener() {
@@ -100,7 +108,7 @@ public class ControlActivity extends AppCompatActivity {
                         camera.stop(MyCamera.LEFT);
                     }
                 }
-                return false;
+                return true;
             }
         });
         btn_cam_right.setOnTouchListener(new OnTouchListener() {
@@ -112,7 +120,7 @@ public class ControlActivity extends AppCompatActivity {
                         camera.stop(MyCamera.RIGHT);
                     }
                 }
-                return false;
+                return true;
             }
         });
         btn_cam_up.setOnTouchListener(new OnTouchListener() {
@@ -124,7 +132,7 @@ public class ControlActivity extends AppCompatActivity {
                         camera.stop(MyCamera.UP);
                     }
                 }
-                return false;
+                return true;
             }
         });
         btn_cam_down.setOnTouchListener(new OnTouchListener() {
@@ -136,11 +144,20 @@ public class ControlActivity extends AppCompatActivity {
                         camera.stop(MyCamera.DOWN);
                     }
                 }
-                return false;
+                return true;
             }
         });
-
-
+//
+        btn_fullscreen.setOnTouchListener(new OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                Intent intent = new Intent(ControlActivity.this, ViewStreamActivity.class);
+                startActivity(intent);
+                return true;
+            }
+        });
+//
+//
         swichMode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
