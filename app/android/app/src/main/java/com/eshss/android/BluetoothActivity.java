@@ -25,6 +25,7 @@ public class BluetoothActivity extends AppCompatActivity implements  DeviceListF
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bluetooth);
+        getSupportActionBar().setTitle("Bluetooth");
 
         BTAdapter = BluetoothAdapter.getDefaultAdapter();
 
