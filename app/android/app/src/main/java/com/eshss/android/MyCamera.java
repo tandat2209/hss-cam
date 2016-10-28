@@ -30,6 +30,8 @@ public class MyCamera {
     public static final String CameraStopTurnLeftURL = CameraControlURL + "&code=3" + LEFT;
     public static final String CameraStopTurnRightURL = CameraControlURL + "&code=3" + RIGHT;
 
+    public static final String StreamURL = "http://192.168.1.101:5000";
+
     public boolean turn(String direction){
         String url = CameraControlURL + "&code=2"+ direction;
         boolean result = false;

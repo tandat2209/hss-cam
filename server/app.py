@@ -3,7 +3,7 @@ import sys
 import time
 sys.path.insert(0, os.path.abspath('.'))
 # from camera_api.camera import Camera
-import camera_api.config as config
+# import camera_api.config as config
 from mockCamera import VideoCamera;
 
 from flask import Flask, render_template, Response, jsonify, url_for
